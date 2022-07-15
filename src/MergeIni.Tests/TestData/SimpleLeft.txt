@@ -1,0 +1,7 @@
+﻿[UniqueLeftSection]
+KeyOne=1
+KeyTwo=2
+
+[CommonSection]
+LeftOnlyKey=left
+SharedKey=left

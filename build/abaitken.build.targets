@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+	
+	<Target Name="CompileProjects" Condition="'@(BuildProjects)' != ''">
+		
+		<MSBuild Projects="@(BuildProjects)" Targets="Build" BuildInParallel="true" 
+				 Properties="Configuration=$(Configuration);
+							 PublishProfile=FolderProfile;
+							 DeployOnBuild=true;
+							 Platform=$(Platform);
+							 SolutionDirectory=$(SolutionDirectory)" />
+							 
+	</Target>
+    
+	<!--
+		Cleans up all project types
+	-->
+	<Target Name="CleanProjects" 
+			DependsOnTargets="CleanSource">		
+	</Target>
+	
+	<!--
+		Removes the build folders
+	-->
+	<Target Name="CleanFolders">
+		<RemoveDir Directories="$(_IntermediateOutputPath);$(_OutDir)" />
+	</Target>
+	
+	<!--
+		Cleans up the compiled source projects
+	-->
+	<Target Name="CleanSource" Condition="'@(BuildProjects)' != ''">
+	
+		<MSBuild Projects="@(BuildProjects)" Targets="Clean" BuildInParallel="true" 
+				 Properties="Configuration=$(Configuration);
+							 Platform=$(Platform);
+							 SolutionDirectory=$(SolutionDirectory)"
+				 ContinueOnError="true" />
+				 
+	</Target>	
+
+
+	<!--
+		Stub for main Restore target
+	-->
+	<Target Name="Restore">
+		<Exec Command='nuget restore "%(BuildProjects.Identity)"' />
+    </Target>
+	
+	<!--
+		Stub for main Build target
+	-->
+	<Target Name="Build" DependsOnTargets="CompileProjects">
+	</Target>
+		
+	
+	<!--
+		Stub for main VSTest target
+	-->
+	<Target Name="VSTest" DependsOnTargets="RunTests">
+	</Target>
+	
+	<!--
+		Stub for main Clean target
+	-->
+	<Target Name="Clean" DependsOnTargets="CleanProjects;CleanFolders">
+	</Target>
+	
+	<!--
+		Stub for main Pack target
+	-->
+	<Target Name="Pack" DependsOnTargets="Build">
+	</Target>
+    
+	<!--
+		Stub for main Publish target
+	-->
+	<Target Name="Publish" DependsOnTargets="Pack">
+		<Error Text="Publishing is not currently implemented" />
+	</Target>
+    
+</Project>

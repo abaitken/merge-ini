@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>	
+	<Import Project="versions.props" />
+	<Import Project="build\abaitken.build.targets" />
+	
+	<ItemGroup>
+		<BuildProjects Include="src\MergeIni.sln" />
+	</ItemGroup>
+</Project>

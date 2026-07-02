@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
+    <Target Name="_build_version">
+        <PropertyGroup>
+            <FullVersionString>$(VersionMajor).$(VersionMinor).$(VersionPatch)</FullVersionString>
+            <FullVersionString Condition="'$(PreRelease)' != ''">$(FullVersionString)-$(PreRelease)</FullVersionString>
+        </PropertyGroup>
+    </Target>
+    
     <Target Name="_set_properties">
         <PropertyGroup>
             <DefaultConfiguration>Release</DefaultConfiguration>
@@ -20,10 +27,7 @@
 		
 		<MSBuild Projects="@(BuildProjects)" Targets="Build" BuildInParallel="true" 
 				 Properties="Configuration=$(Configuration);
-							 PublishProfile=FolderProfile;
-							 DeployOnBuild=true;
-							 Platform=$(Platform);
-							 SolutionDirectory=$(SolutionDirectory)" />
+							 Platform=$(Platform)" />
 							 
 	</Target>
     
@@ -49,8 +53,7 @@
 	
 		<MSBuild Projects="@(BuildProjects)" Targets="Clean" BuildInParallel="true" 
 				 Properties="Configuration=$(Configuration);
-							 Platform=$(Platform);
-							 SolutionDirectory=$(SolutionDirectory)"
+							 Platform=$(Platform)"
 				 ContinueOnError="true" />
 				 
 	</Target>	
@@ -72,8 +75,10 @@
 	
 	<!--
 		Stub for main VSTest target
+        DependsOnTargets="RunTests"
 	-->
-	<Target Name="VSTest" DependsOnTargets="RunTests">
+	<Target Name="VSTest">
+        <Error Text="VSTest is not currently implemented" />
 	</Target>
 	
 	<!--
@@ -86,13 +91,46 @@
 		Stub for main Pack target
 	-->
 	<Target Name="Pack" DependsOnTargets="Build">
+		<Error Text="Pack is not currently implemented" />
 	</Target>
     
 	<!--
 		Stub for main Publish target
-	-->
-	<Target Name="Publish" DependsOnTargets="Pack">
-		<Error Text="Publishing is not currently implemented" />
+	-->    
+	<Target Name="Publish">
+            
+        <ItemGroup>
+            <RuntimeIdentifiers Include="win-x64">
+                <SelfContained>false</SelfContained>
+            </RuntimeIdentifiers>
+            <RuntimeIdentifiers Include="linux-x64">
+                <SelfContained>true</SelfContained>
+            </RuntimeIdentifiers>
+        </ItemGroup>
+		
+		<MSBuild Projects="$(MSBuildProjectFile)" Targets="_publish_rid" BuildInParallel="true" 
+				 Properties="RuntimeIdentifier=%(RuntimeIdentifiers.Identity);
+                             SelfContained=%(RuntimeIdentifiers.SelfContained)" />
 	</Target>
     
+    <Target Name="_publish_rid" DependsOnTargets="_build_version">
+        <PropertyGroup>
+            <Configuration>Release</Configuration>
+            <Platform>x64</Platform>
+            
+            <PublishRoot>$(MSBuildProjectDirectory)/publish</PublishRoot>
+            
+            <RidPublishDir>$(PublishRoot)/$(RuntimeIdentifier).$(FullVersionString)</RidPublishDir>
+            <RidZipFile>$(PublishRoot)/$(RuntimeIdentifier).$(FullVersionString).zip</RidZipFile>
+        </PropertyGroup>
+		
+		<MSBuild Projects="@(PublicProjects)" Targets="Publish" 
+				 Properties="Configuration=$(Configuration);
+							 RuntimeIdentifier=$(RuntimeIdentifier);
+                             PublishDir=$(RidPublishDir);
+                             SelfContained=$(SelfContained);" />
+                             
+        <ZipDirectory SourceDirectory="$(RidPublishDir)"
+                      DestinationFile="$(RidZipFile)" />
+    </Target>
 </Project>

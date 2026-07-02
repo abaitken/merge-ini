@@ -124,7 +124,7 @@
             <RidZipFile>$(PublishRoot)/$(ProjectIdentity).$(RuntimeIdentifier).$(FullVersionString).zip</RidZipFile>
         </PropertyGroup>
 		
-		<MSBuild Projects="@(PublicProjects)" Targets="Publish" 
+		<MSBuild Projects="@(PublishProjects)" Targets="Publish" 
 				 Properties="Configuration=$(Configuration);
 							 RuntimeIdentifier=$(RuntimeIdentifier);
                              PublishDir=$(RidPublishDir);

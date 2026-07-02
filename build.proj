@@ -5,6 +5,6 @@
 	
 	<ItemGroup>
 		<BuildProjects Include="src\MergeIni.sln" />
-		<PublicProjects Include="src\MergeIni\MergeIni.csproj" />
+		<PublishProjects Include="src\MergeIni\MergeIni.csproj" />
 	</ItemGroup>
 </Project>

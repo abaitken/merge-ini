@@ -5,15 +5,17 @@ namespace MergeIni
     internal class IniWriter : IDisposable
     {
         private readonly Stream _stream;
+        private readonly string _lineEnding;
         private bool _disposedValue;
 
-        public IniWriter(Stream stream)
+        public IniWriter(Stream stream, string lineEnding)
         {
             _stream = stream;
+            _lineEnding = lineEnding;
         }
 
-        public IniWriter(string filename)
-            : this(new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.Read))
+        public IniWriter(string filename, string lineEnding)
+            : this(new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.Read), lineEnding)
         {
         }
 
@@ -23,12 +25,16 @@ namespace MergeIni
 
             foreach (var section in document.Sections)
             {
-                writer.WriteLine($"[{section.Name}]");
+                writer.Write($"[{section.Name}]");
+                writer.Write(this._lineEnding);
 
                 foreach (var value in section.Values)
-                    writer.WriteLine($"{value.Key}={value.Value}");
+                {
+                    writer.Write($"{value.Key}={value.Value}");
+                    writer.Write(this._lineEnding);
+                }
 
-                writer.WriteLine();
+                writer.Write(this._lineEnding);
             }
         }
 

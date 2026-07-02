@@ -38,7 +38,7 @@ namespace MergeIni.Commands
             }
 
 #pragma warning disable CS8604 // Possible null reference argument.
-            using var writer = new IniWriter(outputFile);
+            using var writer = new IniWriter(outputFile, options.LineEndings);
 #pragma warning restore CS8604 // Possible null reference argument.
             writer.Write(finalDocument);
             return ExitCodes.OK;

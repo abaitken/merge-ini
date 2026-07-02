@@ -32,6 +32,26 @@ namespace MergeIni.Options
             }
         }
 
+        public string LineEndings
+        {
+            get
+            {
+                if (!TryGetValue("le", out var result))
+                    return Environment.NewLine;
+
+                if (result.Value == null)
+                    return Environment.NewLine;
+
+                return result.Value.ToUpper() switch
+                {
+                    "CR" => "\r",
+                    "CRLF" => "\r\n",
+                    "LF" => "\n",
+                    _ => throw new ArgumentOutOfRangeException("Line Endings", result.Value, "Unexpected line ending"),
+                };
+            }
+        }
+
         public IEnumerable<MergeItem> MergeItems
         {
             get

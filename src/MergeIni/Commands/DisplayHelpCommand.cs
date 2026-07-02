@@ -16,6 +16,7 @@ namespace MergeIni.Commands
  -o <file-path>     Output file
  -m <file-path>     Merge file
  -l <file-path>     Merge file list
+ -le CR | CRLF | LF Set output line endings (optional, will use system line endings by default)
 ");
 
             return ExitCodes.OK;

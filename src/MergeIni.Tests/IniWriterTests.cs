@@ -59,7 +59,7 @@ namespace MergeIni.Tests
             #endregion
 
             using var ms = new MemoryStream();
-            using var subject = new IniWriter(ms);
+            using var subject = new IniWriter(ms, "\n");
             subject.Write(input);
             var buffer = ms.ToArray();
             using var reader = new StreamReader(new MemoryStream(buffer));
@@ -103,7 +103,79 @@ MaxPlayers=8
 Duration=5
 Message=Welcome to the Exilers server
 
-", actual);
+".ReplaceLineEndings("\n"), actual);
+        }
+
+        [TestMethod]
+        public void CanWriteIniLFLineEndings()
+        {
+            #region Input Data
+            var input = new IniDocument();
+            var section_ServerSettings = new Section("ServerSettings");
+            section_ServerSettings.Values.Add(new KeyValuePair<string, string>("MaxTributeDinos", "250"));
+            section_ServerSettings.Values.Add(new KeyValuePair<string, string>("MaxTributeItems", "150"));
+            input.Sections.Add(section_ServerSettings);
+            #endregion
+
+            using var ms = new MemoryStream();
+            using var subject = new IniWriter(ms, "\n");
+            subject.Write(input);
+            var buffer = ms.ToArray();
+            using var reader = new StreamReader(new MemoryStream(buffer));
+            var actual = reader.ReadToEnd();
+            AssertCustom.AreEqual(@"[ServerSettings]
+MaxTributeDinos=250
+MaxTributeItems=150
+
+".ReplaceLineEndings("\n"), actual);
+        }
+
+        [TestMethod]
+        public void CanWriteIniCRLFLineEndings()
+        {
+            #region Input Data
+            var input = new IniDocument();
+            var section_ServerSettings = new Section("ServerSettings");
+            section_ServerSettings.Values.Add(new KeyValuePair<string, string>("MaxTributeDinos", "250"));
+            section_ServerSettings.Values.Add(new KeyValuePair<string, string>("MaxTributeItems", "150"));
+            input.Sections.Add(section_ServerSettings);
+            #endregion
+
+            using var ms = new MemoryStream();
+            using var subject = new IniWriter(ms, "\r\n");
+            subject.Write(input);
+            var buffer = ms.ToArray();
+            using var reader = new StreamReader(new MemoryStream(buffer));
+            var actual = reader.ReadToEnd();
+            AssertCustom.AreEqual(@"[ServerSettings]
+MaxTributeDinos=250
+MaxTributeItems=150
+
+".ReplaceLineEndings("\r\n"), actual);
+        }
+
+        [TestMethod]
+        public void CanWriteIniCRLineEndings()
+        {
+            #region Input Data
+            var input = new IniDocument();
+            var section_ServerSettings = new Section("ServerSettings");
+            section_ServerSettings.Values.Add(new KeyValuePair<string, string>("MaxTributeDinos", "250"));
+            section_ServerSettings.Values.Add(new KeyValuePair<string, string>("MaxTributeItems", "150"));
+            input.Sections.Add(section_ServerSettings);
+            #endregion
+
+            using var ms = new MemoryStream();
+            using var subject = new IniWriter(ms, "\r");
+            subject.Write(input);
+            var buffer = ms.ToArray();
+            using var reader = new StreamReader(new MemoryStream(buffer));
+            var actual = reader.ReadToEnd();
+            AssertCustom.AreEqual(@"[ServerSettings]
+MaxTributeDinos=250
+MaxTributeItems=150
+
+".ReplaceLineEndings("\r"), actual);
         }
     }
 }

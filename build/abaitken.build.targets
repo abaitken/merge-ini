@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
-
+    <Target Name="_set_properties">
+        <PropertyGroup>
+            <DefaultConfiguration>Release</DefaultConfiguration>
+            <DefaultPlatform>Any CPU</DefaultPlatform>
+        </PropertyGroup>
+        
+        <Warning Text="Configuration property not set. Using '$(DefaultConfiguration)' by default'" Condition="'$(Configuration)' == ''" />
+        <Warning Text="Platform property not set. Using 'Any CPU' by default'" Condition="'$(Platform)' == ''" />
+        
+        <PropertyGroup>
+            <Configuration Condition="'$(Configuration)' == ''">$(DefaultConfiguration)</Configuration>
+            <Platform Condition="'$(Platform)' == ''">$(DefaultPlatform)</Platform>
+        </PropertyGroup>
+    </Target>
 	
-	<Target Name="CompileProjects" Condition="'@(BuildProjects)' != ''">
+	<Target Name="CompileProjects" Condition="'@(BuildProjects)' != ''"
+			DependsOnTargets="_set_properties">
 		
 		<MSBuild Projects="@(BuildProjects)" Targets="Build" BuildInParallel="true" 
 				 Properties="Configuration=$(Configuration);
@@ -30,7 +44,8 @@
 	<!--
 		Cleans up the compiled source projects
 	-->
-	<Target Name="CleanSource" Condition="'@(BuildProjects)' != ''">
+	<Target Name="CleanSource" Condition="'@(BuildProjects)' != ''"
+			DependsOnTargets="_set_properties">
 	
 		<MSBuild Projects="@(BuildProjects)" Targets="Clean" BuildInParallel="true" 
 				 Properties="Configuration=$(Configuration);

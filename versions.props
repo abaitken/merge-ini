@@ -2,6 +2,7 @@
 <Project>
 
 	<PropertyGroup>
+        <ProjectIdentity>merge-ini</ProjectIdentity>
         <VersionMajor>2</VersionMajor>
         <VersionMinor>0</VersionMinor>
         <VersionPatch>0</VersionPatch>

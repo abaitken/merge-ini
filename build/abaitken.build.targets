@@ -121,7 +121,7 @@
             <PublishRoot>$(MSBuildProjectDirectory)/publish</PublishRoot>
             
             <RidPublishDir>$(PublishRoot)/$(RuntimeIdentifier).$(FullVersionString)</RidPublishDir>
-            <RidZipFile>$(PublishRoot)/$(RuntimeIdentifier).$(FullVersionString).zip</RidZipFile>
+            <RidZipFile>$(PublishRoot)/$(ProjectIdentity).$(RuntimeIdentifier).$(FullVersionString).zip</RidZipFile>
         </PropertyGroup>
 		
 		<MSBuild Projects="@(PublicProjects)" Targets="Publish" 
